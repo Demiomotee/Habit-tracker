@@ -1,0 +1,28 @@
+<svg width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Outer ring -->
+  <circle cx="60" cy="60" r="54" stroke="#22c55e" stroke-width="3" stroke-dasharray="8 4" opacity="0.4"/>
+  <!-- Inner circle -->
+  <circle cx="60" cy="60" r="44" fill="#0d1220" stroke="#1a2236" stroke-width="2"/>
+  <!-- Green glow -->
+  <circle cx="60" cy="60" r="38" fill="url(#glowGrad)" opacity="0.15"/>
+  <!-- Chain links forming a cycle (habit loop) -->
+  <circle cx="60" cy="28" r="8" fill="#22c55e" opacity="0.9"/>
+  <circle cx="60" cy="28" r="4" fill="#0d1220"/>
+  <circle cx="87" cy="72" r="8" fill="#22c55e" opacity="0.7"/>
+  <circle cx="87" cy="72" r="4" fill="#0d1220"/>
+  <circle cx="33" cy="72" r="8" fill="#22c55e" opacity="0.7"/>
+  <circle cx="33" cy="72" r="4" fill="#0d1220"/>
+  <!-- Connecting lines -->
+  <line x1="60" y1="36" x2="81" y2="65" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round" opacity="0.6"/>
+  <line x1="81" y1="65" x2="39" y2="65" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round" opacity="0.6"/>
+  <line x1="39" y1="65" x2="60" y2="36" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round" opacity="0.6"/>
+  <!-- Center checkmark -->
+  <circle cx="60" cy="60" r="12" fill="#22c55e"/>
+  <path d="M54 60.5L58 64.5L67 56" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <defs>
+    <radialGradient id="glowGrad" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#22c55e"/>
+      <stop offset="100%" stop-color="#22c55e" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+</svg>

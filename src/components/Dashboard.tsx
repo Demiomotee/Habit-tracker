@@ -63,7 +63,7 @@ export default function Dashboard({ session }: Props) {
   const totalStreak = habits.reduce((s, h) => s + calculateCurrentStreak(h.completions, today), 0);
   const pct = habits.length > 0 ? Math.round((doneToday / habits.length) * 100) : 0;
 
-  // Use real name from session
+
   const displayName = session.name
     ? session.name.split(' ')[0].charAt(0).toUpperCase() + session.name.split(' ')[0].slice(1)
     : session.email.split('@')[0];
@@ -79,7 +79,7 @@ export default function Dashboard({ session }: Props) {
   return (
     <div data-testid="dashboard-page" style={{ background: 'var(--bg)', minHeight: '100vh' }}>
 
-      {/* ── TOP NAV — spans full width ── */}
+
       <header className="top-nav">
         <div className="top-nav-inner">
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
@@ -111,14 +111,13 @@ export default function Dashboard({ session }: Props) {
         </div>
       </header>
 
-      {/* ── CONTENT ── */}
+
       <div className="app-shell">
         <div style={{ padding: '1.375rem 1.25rem 2.5rem' }}>
 
-          {/* HOME */}
+          
           {view === 'home' && (
             <>
-              {/* Greeting */}
               <div style={{ marginBottom: '1.25rem' }}>
                 <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)', fontWeight: 500 }}>{greeting} 👋</p>
                 <h2 style={{ fontWeight: 800, fontSize: '1.5rem', color: 'var(--text-primary)', letterSpacing: '-0.03em', lineHeight: 1.15, marginTop: '0.1rem' }}>
@@ -126,7 +125,7 @@ export default function Dashboard({ session }: Props) {
                 </h2>
               </div>
 
-              {/* Progress card — solid color, no gradient */}
+
               {habits.length > 0 && (
                 <div style={{
                   background: 'var(--brand)',
@@ -134,7 +133,6 @@ export default function Dashboard({ session }: Props) {
                   marginBottom: '1.25rem',
                   position: 'relative', overflow: 'hidden',
                 }}>
-                  {/* Single subtle decorative circle top-right only */}
                   <div style={{ position: 'absolute', right: -20, top: -20, width: 90, height: 90, borderRadius: '50%', background: 'rgba(255,255,255,0.08)', pointerEvents: 'none' }} />
 
                   <p style={{ color: 'rgba(255,255,255,0.65)', fontSize: '0.78rem', fontWeight: 500, position: 'relative' }}>Today&apos;s progress</p>
@@ -150,7 +148,7 @@ export default function Dashboard({ session }: Props) {
                 </div>
               )}
 
-              {/* Section header */}
+
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.75rem' }}>
                 <h3 style={{ fontWeight: 700, fontSize: '0.9375rem', color: 'var(--text-primary)', letterSpacing: '-0.01em' }}>
                   Your habits
@@ -171,7 +169,6 @@ export default function Dashboard({ session }: Props) {
                 </button>
               </div>
 
-              {/* Empty state */}
               {habits.length === 0 && (
                 <div data-testid="empty-state" style={{
                   textAlign: 'center', padding: '3rem 1.5rem',
@@ -190,7 +187,7 @@ export default function Dashboard({ session }: Props) {
                 </div>
               )}
 
-              {/* Habit list */}
+
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
                 {habits.map(h => (
                   <HabitCard key={h.id} habit={h} today={today}
@@ -203,7 +200,6 @@ export default function Dashboard({ session }: Props) {
             </>
           )}
 
-          {/* PROFILE */}
           {view === 'profile' && (
             <ProfilePage
               session={session} habits={habits} today={today}
@@ -214,7 +210,7 @@ export default function Dashboard({ session }: Props) {
         </div>
       </div>
 
-      {/* ── HABIT FORM MODAL ── */}
+
       {(showForm || editingHabit) && (
         <HabitForm
           key={editingHabit?.id ?? 'new'}
@@ -224,7 +220,6 @@ export default function Dashboard({ session }: Props) {
         />
       )}
 
-      {/* ── DELETE CONFIRM ── */}
       {deleteTarget && (
         <div style={{ position: 'fixed', inset: 0, zIndex: 200, background: 'rgba(0,0,0,0.4)', backdropFilter: 'blur(6px)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1.25rem' }}>
           <div className="modal-in" style={{ width: '100%', maxWidth: 320, background: 'var(--bg-card)', borderRadius: 20, border: '1px solid var(--border-soft)', padding: '1.75rem 1.5rem', textAlign: 'center' }}>
@@ -243,7 +238,6 @@ export default function Dashboard({ session }: Props) {
         </div>
       )}
 
-      {/* ── SIGN OUT CONFIRM ── */}
       {showSignOut && (
         <div style={{ position: 'fixed', inset: 0, zIndex: 200, background: 'rgba(0,0,0,0.4)', backdropFilter: 'blur(6px)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1.25rem' }}>
           <div className="modal-in" style={{ width: '100%', maxWidth: 320, background: 'var(--bg-card)', borderRadius: 20, border: '1px solid var(--border-soft)', padding: '1.75rem 1.5rem', textAlign: 'center' }}>

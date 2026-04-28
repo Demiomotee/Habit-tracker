@@ -1,6 +1,6 @@
 'use client';
-
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import { X, Sparkles } from 'lucide-react';
 import { Habit } from '@/types/habit';
 import { validateHabitName } from '@/lib/validators';
 
@@ -11,122 +11,136 @@ interface Props {
 }
 
 export default function HabitForm({ initial, onSave, onCancel }: Props) {
-  const [name, setName] = useState(initial?.name ?? '');
-  const [description, setDescription] = useState(initial?.description ?? '');
-  const [nameError, setNameError] = useState('');
+  const [name, setName]             = useState(initial?.name ?? '');
+  const [description, setDesc]      = useState(initial?.description ?? '');
+  const [nameError, setNameError]   = useState('');
+  const nameRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     setName(initial?.name ?? '');
-    setDescription(initial?.description ?? '');
+    setDesc(initial?.description ?? '');
     setNameError('');
+    setTimeout(() => nameRef.current?.focus(), 80);
   }, [initial]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const result = validateHabitName(name);
-    if (!result.valid) {
-      setNameError(result.error ?? 'Invalid name');
-      return;
-    }
-    setNameError('');
+    if (!result.valid) { setNameError(result.error ?? 'Invalid'); return; }
     onSave(result.value, description.trim());
+  };
+
+  // Close on backdrop click
+  const handleBackdrop = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (e.target === e.currentTarget) onCancel();
   };
 
   return (
     <div
-      data-testid="habit-form"
+      onClick={handleBackdrop}
       style={{
-        background: 'var(--bg-card)',
-        border: '1.5px solid var(--brand)',
-        borderRadius: 16,
-        padding: '1.25rem',
-        marginBottom: '1rem',
-        boxShadow: '0 0 0 4px rgba(34,197,94,0.06)',
+        position: 'fixed', inset: 0, zIndex: 200,
+        background: 'rgba(0,0,0,0.55)',
+        backdropFilter: 'blur(6px)',
+        WebkitBackdropFilter: 'blur(6px)',
+        display: 'flex', alignItems: 'flex-end', justifyContent: 'center',
+        padding: '0',
       }}
     >
-      <h4 style={{
-        fontWeight: 700, fontSize: '0.95rem',
-        color: 'var(--text-primary)', marginBottom: '1rem',
-      }}>
-        {initial ? '✏️ Edit Habit' : '✨ New Habit'}
-      </h4>
-
-      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-        <div>
-          <label htmlFor="habit-name" className="label">Habit name *</label>
-          <input
-            id="habit-name"
-            data-testid="habit-name-input"
-            type="text"
-            className="input"
-            placeholder="e.g. Drink 8 glasses of water"
-            value={name}
-            onChange={(e) => { setName(e.target.value); setNameError(''); }}
-            maxLength={65}
-            autoFocus
-          />
-          {nameError && (
-            <p style={{ color: 'var(--danger)', fontSize: '0.8rem', marginTop: '0.35rem', fontWeight: 500 }}>
-              {nameError}
-            </p>
-          )}
+      {/* Sheet — slides up from bottom on mobile, centered on desktop */}
+      <div
+        data-testid="habit-form"
+        className="scale-in"
+        style={{
+          width: '100%', maxWidth: 480,
+          background: 'var(--bg-card)',
+          borderRadius: '24px 24px 0 0',
+          border: '1px solid var(--border)',
+          borderBottom: 'none',
+          boxShadow: '0 -8px 40px rgba(0,0,0,0.25)',
+          padding: '0 1.5rem 2rem',
+          position: 'relative',
+        }}
+      >
+        {/* Drag handle */}
+        <div style={{ display: 'flex', justifyContent: 'center', paddingTop: '0.75rem', marginBottom: '0.25rem' }}>
+          <div style={{ width: 36, height: 4, borderRadius: 99, background: 'var(--border)' }} />
         </div>
 
-        <div>
-          <label htmlFor="habit-description" className="label">Description (optional)</label>
-          <input
-            id="habit-description"
-            data-testid="habit-description-input"
-            type="text"
-            className="input"
-            placeholder="What does success look like?"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-          />
-        </div>
-
-        <div>
-          <label htmlFor="habit-frequency" className="label">Frequency</label>
-          <select
-            id="habit-frequency"
-            data-testid="habit-frequency-select"
-            className="input"
-            value="daily"
-            onChange={() => {}}
-            style={{ cursor: 'default' }}
-          >
-            <option value="daily">Daily</option>
-          </select>
-        </div>
-
-        <div style={{ display: 'flex', gap: '0.75rem', paddingTop: '0.25rem' }}>
-          <button
-            type="button"
-            onClick={onCancel}
-            style={{
-              flex: 1, padding: '0.7rem',
-              background: 'var(--bg-input)',
-              border: '1px solid var(--border)',
-              borderRadius: 10, fontWeight: 600, fontSize: '0.875rem',
-              color: 'var(--text-primary)', cursor: 'pointer',
-            }}
-          >
-            Cancel
-          </button>
-          <button
-            data-testid="habit-save-button"
-            type="submit"
-            style={{
-              flex: 1, padding: '0.7rem',
-              background: 'var(--brand)', border: 'none',
-              borderRadius: 10, fontWeight: 700, fontSize: '0.875rem',
-              color: '#fff', cursor: 'pointer',
-            }}
-          >
-            {initial ? 'Save changes' : 'Create habit'}
+        {/* Header */}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0.875rem 0 1.25rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <Sparkles size={18} strokeWidth={2} color="var(--brand)" />
+            <h3 style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 700, fontSize: '1.0625rem', color: 'var(--text-primary)' }}>
+              {initial ? 'Edit habit' : 'New habit'}
+            </h3>
+          </div>
+          <button onClick={onCancel} aria-label="Close"
+            style={{ width: 32, height: 32, borderRadius: 10, border: '1.5px solid var(--border)', background: 'var(--bg-input)', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
+            <X size={15} strokeWidth={2.5} />
           </button>
         </div>
-      </form>
+
+        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.125rem' }}>
+          {/* Name */}
+          <div>
+            <label htmlFor="habit-name" className="ht-label">Habit name *</label>
+            <input
+              id="habit-name"
+              ref={nameRef}
+              data-testid="habit-name-input"
+              type="text" className="ht-input"
+              placeholder="e.g. Drink 8 glasses of water"
+              value={name}
+              onChange={(e) => { setName(e.target.value); setNameError(''); }}
+              maxLength={65}
+            />
+            {nameError && (
+              <p style={{ color: 'var(--danger)', fontSize: '0.8rem', marginTop: '0.3rem', fontWeight: 500 }}>
+                {nameError}
+              </p>
+            )}
+          </div>
+
+          {/* Description */}
+          <div>
+            <label htmlFor="habit-description" className="ht-label">Description <span style={{ color: 'var(--text-muted)', fontWeight: 400 }}>(optional)</span></label>
+            <input
+              id="habit-description"
+              data-testid="habit-description-input"
+              type="text" className="ht-input"
+              placeholder="Why does this matter to you?"
+              value={description}
+              onChange={(e) => setDesc(e.target.value)}
+            />
+          </div>
+
+          {/* Frequency — readonly per spec */}
+          <div>
+            <label htmlFor="habit-frequency" className="ht-label">Frequency</label>
+            <select
+              id="habit-frequency"
+              data-testid="habit-frequency-select"
+              className="ht-input"
+              value="daily"
+              onChange={() => {}}
+              style={{ cursor: 'default' }}
+            >
+              <option value="daily">Daily</option>
+            </select>
+          </div>
+
+          {/* Actions */}
+          <div style={{ display: 'flex', gap: '0.75rem', marginTop: '0.25rem' }}>
+            <button type="button" onClick={onCancel} className="btn btn-ghost" style={{ flex: 1 }}>
+              Cancel
+            </button>
+            <button data-testid="habit-save-button" type="submit" className="btn btn-primary" style={{ flex: 1 }}>
+              {initial ? 'Save changes' : 'Create habit'}
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 }

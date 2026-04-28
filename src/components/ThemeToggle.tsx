@@ -1,30 +1,30 @@
 'use client';
-
+import { Moon, Sun } from 'lucide-react';
 import { useTheme } from './ThemeProvider';
 
-export default function ThemeToggle() {
+export default function ThemeToggle({ size = 'md' }: { size?: 'sm' | 'md' }) {
   const { theme, toggle } = useTheme();
+  const s = size === 'sm' ? 36 : 40;
+  const iconSize = size === 'sm' ? 15 : 17;
 
   return (
     <button
       onClick={toggle}
       aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
       style={{
-        width: 40,
-        height: 40,
-        borderRadius: '50%',
-        background: 'var(--bg-input)',
-        border: '1px solid var(--border)',
+        width: s, height: s, borderRadius: 12,
+        background: 'var(--bg-subtle)',
+        border: '1.5px solid var(--border)',
+        color: 'var(--text-secondary)',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
         cursor: 'pointer',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        fontSize: '1.1rem',
-        transition: 'all 0.2s',
-        color: 'var(--text-primary)',
+        transition: 'all 0.2s ease',
+        flexShrink: 0,
       }}
     >
-      {theme === 'dark' ? '☀️' : '🌙'}
+      {theme === 'dark'
+        ? <Sun size={iconSize} strokeWidth={2} />
+        : <Moon size={iconSize} strokeWidth={2} />}
     </button>
   );
 }

@@ -1,5 +1,6 @@
 'use client';
-import { Check, Flame, Pencil, Trash2 } from 'lucide-react';
+import { useRef, useState, useEffect } from 'react';
+import { Check, Flame, MoreHorizontal, Pencil, Trash2 } from 'lucide-react';
 import { Habit } from '@/types/habit';
 import { getHabitSlug } from '@/lib/slug';
 import { calculateCurrentStreak } from '@/lib/streaks';
@@ -12,67 +13,90 @@ interface Props {
   onDelete: () => void;
 }
 
+const FREQ_LABELS: Record<string, string> = {
+  daily:    'Daily',
+  weekdays: 'Weekdays',
+  weekends: 'Weekends',
+  weekly:   'Weekly',
+  custom:   'Custom',
+};
+
 export default function HabitCard({ habit, today, onToggle, onEdit, onDelete }: Props) {
-  const slug      = getHabitSlug(habit.name);
-  const done      = habit.completions.includes(today);
-  const streak    = calculateCurrentStreak(habit.completions, today);
+  const slug   = getHabitSlug(habit.name);
+  const done   = habit.completions.includes(today);
+  const streak = calculateCurrentStreak(habit.completions, today);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  // Close menu on outside click
+  useEffect(() => {
+    if (!menuOpen) return;
+    const handler = (e: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+        setMenuOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, [menuOpen]);
+
+  const handleEdit = () => { setMenuOpen(false); onEdit(); };
+  const handleDelete = () => { setMenuOpen(false); onDelete(); };
 
   return (
     <div
       data-testid={`habit-card-${slug}`}
       style={{
         background: done ? 'var(--brand-light)' : 'var(--bg-card)',
-        border: `1.5px solid ${done ? 'rgba(168,85,247,0.3)' : 'var(--border)'}`,
-        borderRadius: 18,
-        padding: '1rem 1.125rem',
-        display: 'flex',
-        alignItems: 'center',
-        gap: '0.875rem',
-        transition: 'all 0.22s ease',
-        boxShadow: done ? '0 4px 16px rgba(124,58,237,0.1)' : 'var(--shadow-sm)',
+        border: `1px solid ${done ? 'rgba(124,58,237,0.2)' : 'var(--border-soft)'}`,
+        borderRadius: 16,
+        padding: '0.875rem 1rem',
+        display: 'flex', alignItems: 'center', gap: '0.75rem',
+        transition: 'border-color 0.2s, background 0.2s',
+        boxShadow: 'none',
       }}
     >
-      {/* Completion toggle */}
+      {/* Completion circle */}
       <button
         data-testid={`habit-complete-${slug}`}
         onClick={onToggle}
         aria-label={done ? `Unmark ${habit.name}` : `Complete ${habit.name}`}
         style={{
-          width: 36, height: 36, borderRadius: 12, flexShrink: 0,
-          border: `2px solid ${done ? 'transparent' : 'var(--border)'}`,
-          background: done
-            ? 'linear-gradient(135deg, #7c3aed, #a855f7)'
-            : 'var(--bg-input)',
+          width: 34, height: 34, borderRadius: 10, flexShrink: 0,
+          border: `1.5px solid ${done ? 'transparent' : 'var(--border)'}`,
+          background: done ? 'linear-gradient(135deg, #7c3aed, #9333ea)' : 'var(--bg-input)',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
-          cursor: 'pointer',
-          transition: 'all 0.22s ease',
-          boxShadow: done ? '0 2px 8px rgba(124,58,237,0.35)' : 'none',
+          cursor: 'pointer', transition: 'all 0.2s',
+          boxShadow: done ? '0 2px 8px rgba(124,58,237,0.28)' : 'none',
         }}
       >
-        {done && (
-          <Check size={17} strokeWidth={3} color="white" className="check-pop" />
-        )}
+        {done && <Check size={16} strokeWidth={2.5} color="white" className="check-pop" />}
       </button>
 
-      {/* Text content */}
+      {/* Content */}
       <div style={{ flex: 1, minWidth: 0 }}>
         <p style={{
           fontWeight: 600, fontSize: '0.9375rem',
           color: done ? 'var(--text-muted)' : 'var(--text-primary)',
           textDecoration: done ? 'line-through' : 'none',
           overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
-          transition: 'all 0.2s',
+          letterSpacing: '-0.01em',
         }}>
           {habit.name}
         </p>
-        {habit.description && (
-          <p style={{
-            fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: 2,
-            overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
-          }}>
-            {habit.description}
-          </p>
-        )}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginTop: '0.2rem' }}>
+          <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 500 }}>
+            {FREQ_LABELS[habit.frequency] ?? 'Daily'}
+          </span>
+          {habit.description && (
+            <>
+              <span style={{ width: 2, height: 2, borderRadius: '50%', background: 'var(--border)', display: 'inline-block' }} />
+              <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: 140 }}>
+                {habit.description}
+              </span>
+            </>
+          )}
+        </div>
       </div>
 
       {/* Streak badge */}
@@ -81,45 +105,52 @@ export default function HabitCard({ habit, today, onToggle, onEdit, onDelete }: 
         style={{
           display: 'flex', alignItems: 'center', gap: '3px', flexShrink: 0,
           background: streak > 0 ? 'linear-gradient(135deg, #f97316, #ef4444)' : 'var(--bg-subtle)',
-          borderRadius: 8,
-          padding: '3px 8px',
+          borderRadius: 8, padding: '3px 8px',
           fontSize: '0.75rem', fontWeight: 700,
           color: streak > 0 ? '#fff' : 'var(--text-muted)',
         }}
       >
-        {streak > 0 && <Flame size={12} strokeWidth={2.5} className="streak-fire" />}
-        {streak > 0 ? streak : '0'}
+        {streak > 0 && <Flame size={11} strokeWidth={2} />}
+        {streak}
       </div>
 
-      {/* Action buttons */}
-      <div style={{ display: 'flex', gap: '4px', flexShrink: 0 }}>
+      {/* Three-dot menu */}
+      <div ref={menuRef} style={{ position: 'relative', flexShrink: 0 }}>
         <button
-          data-testid={`habit-edit-${slug}`}
-          onClick={onEdit}
-          aria-label={`Edit ${habit.name}`}
+          onClick={() => setMenuOpen(v => !v)}
+          aria-label="Habit options"
           style={{
-            width: 32, height: 32, borderRadius: 9, border: '1.5px solid var(--border)',
-            background: 'var(--bg-input)', color: 'var(--text-muted)',
+            width: 30, height: 30, borderRadius: 8, flexShrink: 0,
+            border: '1px solid var(--border-soft)',
+            background: menuOpen ? 'var(--bg-subtle)' : 'transparent',
+            color: 'var(--text-muted)',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             cursor: 'pointer', transition: 'all 0.15s',
           }}
         >
-          <Pencil size={13} strokeWidth={2} />
+          <MoreHorizontal size={15} strokeWidth={1.75} />
         </button>
-        <button
-          data-testid={`habit-delete-${slug}`}
-          onClick={onDelete}
-          aria-label={`Delete ${habit.name}`}
-          style={{
-            width: 32, height: 32, borderRadius: 9,
-            border: '1.5px solid rgba(239,68,68,0.2)',
-            background: 'rgba(239,68,68,0.06)', color: 'var(--danger)',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            cursor: 'pointer', transition: 'all 0.15s',
-          }}
-        >
-          <Trash2 size={13} strokeWidth={2} />
-        </button>
+
+        {menuOpen && (
+          <div className="dropdown-menu">
+            <button
+              data-testid={`habit-edit-${slug}`}
+              onClick={handleEdit}
+              className="dropdown-item"
+            >
+              <Pencil size={13} strokeWidth={2} color="var(--text-muted)" />
+              Edit
+            </button>
+            <button
+              data-testid={`habit-delete-${slug}`}
+              onClick={handleDelete}
+              className="dropdown-item danger"
+            >
+              <Trash2 size={13} strokeWidth={2} />
+              Delete
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

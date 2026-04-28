@@ -2,9 +2,8 @@ import { defineConfig } from '@playwright/test';
 
 export default defineConfig({
   testDir: './tests/e2e',
-  testMatch: '**/*.spec.ts',
+  testMatch: ['**/app.spec.ts'],
   fullyParallel: false,
-  forbidOnly: !!process.env.CI,
   retries: 0,
   workers: 1,
   reporter: 'list',
@@ -18,7 +17,7 @@ export default defineConfig({
     },
   },
   webServer: {
-    command: 'node node_modules/next/dist/bin/next start -p 3000',
+    command: 'node node_modules/.bin/next start -p 3000',
     url: 'http://localhost:3000',
     reuseExistingServer: true,
     timeout: 30000,

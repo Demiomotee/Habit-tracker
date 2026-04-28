@@ -2,16 +2,12 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-// Mock next/navigation
 const mockReplace = vi.fn();
-vi.mock('next/navigation', () => ({
-  useRouter: () => ({ replace: mockReplace }),
-}));
+vi.mock('next/navigation', () => ({ useRouter: () => ({ replace: mockReplace }) }));
+vi.mock('@/components/ThemeToggle', () => ({ default: () => <button aria-label="Toggle theme">🌙</button> }));
 
-// Mock ThemeToggle
-vi.mock('@/components/shared/ThemeToggle', () => ({
-  default: () => <button aria-label="Toggle theme">🌙</button>,
-}));
+// Mock CalendarView to avoid date complexity in tests
+vi.mock('@/components/CalendarView', () => ({ default: () => <div data-testid="calendar-view" /> }));
 
 import Dashboard from '@/components/Dashboard';
 import { saveHabits, saveSession } from '@/lib/storage';
@@ -69,15 +65,14 @@ describe('habit form', () => {
     saveHabits([existingHabit]);
     render(<Dashboard session={session} />);
 
-    await waitFor(() => {
-      expect(screen.getByTestId('habit-card-drink-water')).toBeInTheDocument();
-    });
+    await waitFor(() => expect(screen.getByTestId('habit-card-drink-water')).toBeInTheDocument());
 
+    // Open three-dot menu then click edit
+    const moreBtn = screen.getAllByLabelText('Habit options')[0];
+    await user.click(moreBtn);
     await user.click(screen.getByTestId('habit-edit-drink-water'));
 
-    await waitFor(() => {
-      expect(screen.getByTestId('habit-form')).toBeInTheDocument();
-    });
+    await waitFor(() => expect(screen.getByTestId('habit-form')).toBeInTheDocument());
 
     const nameInput = screen.getByTestId('habit-name-input');
     await user.clear(nameInput);
@@ -88,10 +83,9 @@ describe('habit form', () => {
       expect(screen.getByTestId('habit-card-drink-more-water')).toBeInTheDocument();
     });
 
-    // Verify immutable fields — check the habit in storage
     const raw = localStorage.getItem('habit-tracker-habits');
     const habits = JSON.parse(raw ?? '[]') as Habit[];
-    const updated = habits.find((h) => h.name === 'Drink More Water');
+    const updated = habits.find(h => h.name === 'Drink More Water');
     expect(updated).toBeDefined();
     expect(updated?.id).toBe(existingHabit.id);
     expect(updated?.userId).toBe(existingHabit.userId);
@@ -104,21 +98,16 @@ describe('habit form', () => {
     saveHabits([existingHabit]);
     render(<Dashboard session={session} />);
 
-    await waitFor(() => {
-      expect(screen.getByTestId('habit-card-drink-water')).toBeInTheDocument();
-    });
+    await waitFor(() => expect(screen.getByTestId('habit-card-drink-water')).toBeInTheDocument());
 
-    // Click delete — should open modal, not delete yet
+    // Open menu, click delete
+    const moreBtn = screen.getAllByLabelText('Habit options')[0];
+    await user.click(moreBtn);
     await user.click(screen.getByTestId('habit-delete-drink-water'));
 
-    await waitFor(() => {
-      expect(screen.getByTestId('confirm-delete-button')).toBeInTheDocument();
-    });
-
-    // Habit still present
+    await waitFor(() => expect(screen.getByTestId('confirm-delete-button')).toBeInTheDocument());
     expect(screen.getByTestId('habit-card-drink-water')).toBeInTheDocument();
 
-    // Confirm
     await user.click(screen.getByTestId('confirm-delete-button'));
 
     await waitFor(() => {
@@ -131,27 +120,15 @@ describe('habit form', () => {
     saveHabits([existingHabit]);
     render(<Dashboard session={session} />);
 
-    await waitFor(() => {
-      expect(screen.getByTestId('habit-card-drink-water')).toBeInTheDocument();
-    });
+    await waitFor(() => expect(screen.getByTestId('habit-card-drink-water')).toBeInTheDocument());
 
     const streakEl = screen.getByTestId('habit-streak-drink-water');
     expect(streakEl).toBeInTheDocument();
 
-    // Toggle complete
     await user.click(screen.getByTestId('habit-complete-drink-water'));
+    await waitFor(() => expect(screen.getByTestId('habit-streak-drink-water').textContent).toContain('1'));
 
-    await waitFor(() => {
-      const updatedStreak = screen.getByTestId('habit-streak-drink-water');
-      expect(updatedStreak.textContent).toContain('1');
-    });
-
-    // Toggle off
     await user.click(screen.getByTestId('habit-complete-drink-water'));
-
-    await waitFor(() => {
-      const updatedStreak = screen.getByTestId('habit-streak-drink-water');
-      expect(updatedStreak.textContent).toContain('0');
-    });
+    await waitFor(() => expect(screen.getByTestId('habit-streak-drink-water').textContent).toContain('0'));
   });
 });

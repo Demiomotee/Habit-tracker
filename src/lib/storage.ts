@@ -2,33 +2,48 @@ import { User, Session } from '@/types/auth';
 import { Habit } from '@/types/habit';
 
 const KEYS = {
-  USERS: 'habit-tracker-users',
+  USERS:   'habit-tracker-users',
   SESSION: 'habit-tracker-session',
-  HABITS: 'habit-tracker-habits',
+  HABITS:  'habit-tracker-habits',
 } as const;
 
-// Users
-export function getUsers(): User[] {
-  if (typeof window === 'undefined') return [];
+// ── Helpers ──────────────────────────────────────────
+function read<T>(key: string, fallback: T): T {
+  if (typeof window === 'undefined') return fallback;
   try {
-    return JSON.parse(localStorage.getItem(KEYS.USERS) ?? '[]');
-  } catch {
-    return [];
-  }
+    const raw = localStorage.getItem(key);
+    if (raw === null || raw === 'null') return fallback;
+    return JSON.parse(raw) as T;
+  } catch { return fallback; }
+}
+
+function write(key: string, value: unknown): void {
+  localStorage.setItem(key, JSON.stringify(value));
+  // Broadcast change to other tabs
+  try {
+    const bc = new BroadcastChannel('habitly-sync');
+    bc.postMessage({ key, ts: Date.now() });
+    bc.close();
+  } catch { /* BroadcastChannel not available */ }
+}
+
+// ── Users ─────────────────────────────────────────────
+export function getUsers(): User[] {
+  return read<User[]>(KEYS.USERS, []);
 }
 
 export function saveUsers(users: User[]): void {
-  localStorage.setItem(KEYS.USERS, JSON.stringify(users));
+  write(KEYS.USERS, users);
 }
 
 export function getUserByEmail(email: string): User | undefined {
-  return getUsers().find((u) => u.email === email);
+  return getUsers().find(u => u.email.toLowerCase() === email.toLowerCase());
 }
 
 export function createUser(email: string, password: string): User {
   const user: User = {
     id: crypto.randomUUID(),
-    email,
+    email: email.trim().toLowerCase(),
     password,
     createdAt: new Date().toISOString(),
   };
@@ -36,55 +51,46 @@ export function createUser(email: string, password: string): User {
   return user;
 }
 
-// Session
+// ── Session ───────────────────────────────────────────
 export function getSession(): Session | null {
-  if (typeof window === 'undefined') return null;
-  try {
-    const raw = localStorage.getItem(KEYS.SESSION);
-    if (!raw || raw === 'null') return null;
-    return JSON.parse(raw);
-  } catch {
-    return null;
-  }
+  return read<Session | null>(KEYS.SESSION, null);
 }
 
 export function saveSession(session: Session | null): void {
-  localStorage.setItem(KEYS.SESSION, JSON.stringify(session));
+  write(KEYS.SESSION, session);
 }
 
 export function clearSession(): void {
-  localStorage.setItem(KEYS.SESSION, 'null');
+  write(KEYS.SESSION, null);
 }
 
-// Habits
+// ── Habits ────────────────────────────────────────────
 export function getHabits(): Habit[] {
-  if (typeof window === 'undefined') return [];
-  try {
-    return JSON.parse(localStorage.getItem(KEYS.HABITS) ?? '[]');
-  } catch {
-    return [];
-  }
+  return read<Habit[]>(KEYS.HABITS, []);
 }
 
 export function saveHabits(habits: Habit[]): void {
-  localStorage.setItem(KEYS.HABITS, JSON.stringify(habits));
+  write(KEYS.HABITS, habits);
 }
 
 export function getHabitsByUser(userId: string): Habit[] {
-  return getHabits().filter((h) => h.userId === userId);
+  return getHabits().filter(h => h.userId === userId);
 }
 
 export function createHabit(
   userId: string,
   name: string,
-  description: string
+  description: string,
+  frequency: Habit['frequency'] = 'daily',
+  customDays?: number[],
 ): Habit {
   const habit: Habit = {
     id: crypto.randomUUID(),
     userId,
     name,
     description,
-    frequency: 'daily',
+    frequency,
+    ...(customDays ? { customDays } : {}),
     createdAt: new Date().toISOString(),
     completions: [],
   };
@@ -93,10 +99,9 @@ export function createHabit(
 }
 
 export function updateHabit(updated: Habit): void {
-  const habits = getHabits().map((h) => (h.id === updated.id ? updated : h));
-  saveHabits(habits);
+  saveHabits(getHabits().map(h => h.id === updated.id ? updated : h));
 }
 
 export function deleteHabit(id: string): void {
-  saveHabits(getHabits().filter((h) => h.id !== id));
+  saveHabits(getHabits().filter(h => h.id !== id));
 }

@@ -53,16 +53,11 @@ export default function LoginForm() {
         <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
           <div style={{
             width: 60, height: 60, borderRadius: 20, margin: '0 auto 1.25rem',
-            background: 'linear-gradient(135deg, #7c3aed, #a855f7)',
+            background: 'transparent',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
-            boxShadow: '0 8px 24px rgba(124,58,237,0.35)',
+            boxShadow: 'none',
           }}>
-            <svg width="34" height="34" viewBox="0 0 48 48" fill="none">
-              <rect x="8" y="10" width="10" height="28" rx="5" fill="white" opacity="0.95"/>
-              <rect x="30" y="10" width="10" height="28" rx="5" fill="white" opacity="0.95"/>
-              <rect x="13" y="19" width="22" height="10" rx="5" fill="white" opacity="0.95"/>
-              <circle cx="35" cy="36" r="4" fill="rgba(255,255,255,0.5)"/>
-            </svg>
+            <img src="/logo.png" alt="Habitly" style={{ width: 36, height: 36, borderRadius: 9 }} />
           </div>
           <h1 style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 800, fontSize: '1.75rem', letterSpacing: '-0.02em', color: 'var(--text-primary)', lineHeight: 1.1 }}>
             Welcome back

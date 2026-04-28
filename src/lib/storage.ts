@@ -7,7 +7,6 @@ const KEYS = {
   HABITS:  'habit-tracker-habits',
 } as const;
 
-// ── Helpers ──────────────────────────────────────────
 function read<T>(key: string, fallback: T): T {
   if (typeof window === 'undefined') return fallback;
   try {
@@ -19,15 +18,14 @@ function read<T>(key: string, fallback: T): T {
 
 function write(key: string, value: unknown): void {
   localStorage.setItem(key, JSON.stringify(value));
-  // Broadcast change to other tabs
   try {
     const bc = new BroadcastChannel('habitly-sync');
     bc.postMessage({ key, ts: Date.now() });
     bc.close();
-  } catch { /* BroadcastChannel not available */ }
+  } catch { /* not available */ }
 }
 
-// ── Users ─────────────────────────────────────────────
+// ── Users ──────────────────────────────────────────
 export function getUsers(): User[] {
   return read<User[]>(KEYS.USERS, []);
 }
@@ -40,18 +38,19 @@ export function getUserByEmail(email: string): User | undefined {
   return getUsers().find(u => u.email.toLowerCase() === email.toLowerCase());
 }
 
-export function createUser(email: string, password: string): User {
+export function createUser(email: string, password: string, name: string): User {
   const user: User = {
     id: crypto.randomUUID(),
     email: email.trim().toLowerCase(),
     password,
+    name: name.trim(),
     createdAt: new Date().toISOString(),
   };
   saveUsers([...getUsers(), user]);
   return user;
 }
 
-// ── Session ───────────────────────────────────────────
+// ── Session ───────────────────────────────────────
 export function getSession(): Session | null {
   return read<Session | null>(KEYS.SESSION, null);
 }
@@ -64,7 +63,7 @@ export function clearSession(): void {
   write(KEYS.SESSION, null);
 }
 
-// ── Habits ────────────────────────────────────────────
+// ── Habits ────────────────────────────────────────
 export function getHabits(): Habit[] {
   return read<Habit[]>(KEYS.HABITS, []);
 }
@@ -86,10 +85,7 @@ export function createHabit(
 ): Habit {
   const habit: Habit = {
     id: crypto.randomUUID(),
-    userId,
-    name,
-    description,
-    frequency,
+    userId, name, description, frequency,
     ...(customDays ? { customDays } : {}),
     createdAt: new Date().toISOString(),
     completions: [],

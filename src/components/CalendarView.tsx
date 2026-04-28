@@ -16,7 +16,7 @@ export default function CalendarView({ habits }: Props) {
 
   const todayStr = now.toISOString().split('T')[0];
 
-  // Build a set of all completion dates across all habits
+
   const allCompletions = new Set<string>(habits.flatMap(h => h.completions));
 
   const { year, month } = viewDate;
@@ -36,7 +36,7 @@ export default function CalendarView({ habits }: Props) {
       padding: '1.125rem',
       boxShadow: 'none',
     }}>
-      {/* Header */}
+
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem' }}>
         <button onClick={prev} style={{
           width: 32, height: 32, borderRadius: 9,
@@ -63,7 +63,7 @@ export default function CalendarView({ habits }: Props) {
         </button>
       </div>
 
-      {/* Day of week headers */}
+
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '0.25rem', marginBottom: '0.4rem' }}>
         {DOW.map(d => (
           <div key={d} style={{ textAlign: 'center', fontSize: '0.72rem', fontWeight: 600, color: 'var(--text-muted)', padding: '0.25rem 0' }}>
@@ -72,14 +72,13 @@ export default function CalendarView({ habits }: Props) {
         ))}
       </div>
 
-      {/* Calendar grid */}
+
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '0.25rem' }}>
-        {/* Empty leading cells */}
         {Array.from({ length: firstDay }).map((_, i) => (
           <div key={`e-${i}`} style={{ aspectRatio: '1' }} />
         ))}
 
-        {/* Day cells */}
+
         {Array.from({ length: daysInMonth }).map((_, i) => {
           const day = i + 1;
           const dateStr = `${year}-${pad(month + 1)}-${pad(day)}`;
@@ -105,7 +104,6 @@ export default function CalendarView({ habits }: Props) {
         })}
       </div>
 
-      {/* Legend */}
       <div style={{ display: 'flex', gap: '1rem', marginTop: '0.875rem', justifyContent: 'center' }}>
         {[
           { color: 'linear-gradient(135deg,#7c3aed,#9333ea)', label: 'Completed' },

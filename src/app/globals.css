@@ -75,14 +75,14 @@ body {
   border-radius: 8px;
 }
 
-/* ── Layout ── */
+
 .app-shell {
   max-width: 680px;
   margin: 0 auto;
   min-height: 100vh;
 }
 
-/* Top nav — full width on desktop, max-width centered content */
+
 .top-nav {
   position: sticky;
   top: 0;
@@ -94,7 +94,7 @@ body {
   border-bottom: 1px solid var(--border-soft);
 }
 .top-nav-inner {
-  max-width: 680px;
+  max-width: 1000px;
   margin: 0 auto;
   padding: 0.875rem 1.25rem;
   display: flex;
@@ -102,7 +102,7 @@ body {
   justify-content: space-between;
 }
 
-/* ── Inputs ── */
+
 .ht-input {
   width: 100%;
   background: var(--bg-input);
@@ -138,7 +138,7 @@ body {
 }
 .ht-label.error { color: var(--danger); }
 
-/* Inline field error */
+
 .field-error {
   font-size: 0.8rem;
   color: var(--danger);
@@ -149,7 +149,7 @@ body {
   gap: 0.3rem;
 }
 
-/* ── Buttons ── */
+
 .btn {
   display: inline-flex;
   align-items: center;
@@ -188,14 +188,14 @@ body {
 }
 .btn-danger:hover { background: #b91c1c; }
 
-/* ── Card ── */
+
 .card {
   background: var(--bg-card);
   border: 1px solid var(--border-soft);
   border-radius: 16px;
 }
 
-/* ── Animations ── */
+
 @keyframes modalIn {
   from { opacity: 0; transform: scale(0.95) translateY(6px); }
   to   { opacity: 1; transform: scale(1)    translateY(0); }
@@ -226,7 +226,7 @@ body {
   50%     { opacity: 1;    transform: scale(1.2); }
 }
 
-/* ── Dropdown ── */
+
 .dropdown-menu {
   position: absolute;
   right: 0;
@@ -261,7 +261,7 @@ body {
 .dropdown-item.danger { color: var(--danger); }
 .dropdown-item.danger:hover { background: var(--danger-bg); }
 
-/* ── Calendar ── */
+
 .cal-day {
   aspect-ratio: 1;
   display: flex;
@@ -285,7 +285,6 @@ body {
 }
 .cal-day.future { color: var(--text-muted); }
 
-/* ── Splash ── */
 @keyframes splashPulse {
   0%,100% { opacity: 0.4; transform: scale(1); }
   50%     { opacity: 0.2; transform: scale(1.05); }

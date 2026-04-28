@@ -45,7 +45,7 @@ export default function HabitCard({ habit, today, onToggle, onEdit, onDelete }: 
         transition: 'background 0.18s, border-color 0.18s',
       }}
     >
-      {/* Completion button */}
+
       <button
         data-testid={`habit-complete-${slug}`}
         onClick={onToggle}
@@ -61,7 +61,7 @@ export default function HabitCard({ habit, today, onToggle, onEdit, onDelete }: 
         {done && <Check size={15} strokeWidth={3} color="white" className="check-pop" />}
       </button>
 
-      {/* Content */}
+
       <div style={{ flex: 1, minWidth: 0 }}>
         <p style={{
           fontWeight: 600, fontSize: '0.9375rem',
@@ -87,7 +87,7 @@ export default function HabitCard({ habit, today, onToggle, onEdit, onDelete }: 
         </div>
       </div>
 
-      {/* Streak badge */}
+
       <div
         data-testid={`habit-streak-${slug}`}
         style={{
@@ -102,7 +102,7 @@ export default function HabitCard({ habit, today, onToggle, onEdit, onDelete }: 
         {streak}
       </div>
 
-      {/* Three-dot menu */}
+
       <div ref={menuRef} style={{ position: 'relative', flexShrink: 0 }}>
         <button
           onClick={() => setMenuOpen(v => !v)}

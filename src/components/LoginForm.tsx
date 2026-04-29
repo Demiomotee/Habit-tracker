@@ -10,16 +10,16 @@ interface FieldErrors { email?: string; password?: string; }
 
 export default function LoginForm() {
   const router = useRouter();
-  const [email, setEmail]       = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [showPw, setShowPw]     = useState(false);
-  const [errors, setErrors]     = useState<FieldErrors>({});
-  const [loading, setLoading]   = useState(false);
+  const [showPw, setShowPw] = useState(false);
+  const [errors, setErrors] = useState<FieldErrors>({});
+  const [loading, setLoading] = useState(false);
 
   const validate = (): FieldErrors => {
     const e: FieldErrors = {};
-    if (!email.trim())    e.email    = 'Email address is required';
-    if (!password)        e.password = 'Password is required';
+    if (!email.trim()) e.email = 'Email address is required';
+    if (!password) e.password = 'Password is required';
     return e;
   };
 
@@ -52,7 +52,6 @@ export default function LoginForm() {
       </div>
 
       <div style={{ width: '100%', maxWidth: 420 }}>
-        {/* Logo + heading */}
         <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
           <img src="/logo.png" alt="Habitly"
             style={{ width: 56, height: 56, borderRadius: 16, margin: '0 auto 1rem', display: 'block' }} />
@@ -64,11 +63,11 @@ export default function LoginForm() {
           </p>
         </div>
 
-        {/* Card */}
+
         <div style={{ background: 'var(--bg-card)', borderRadius: 20, border: '1px solid var(--border-soft)', padding: '2rem' }}>
           <form onSubmit={handleSubmit} noValidate style={{ display: 'flex', flexDirection: 'column', gap: '1.125rem' }}>
 
-            {/* Email */}
+ 
             <div>
               <label htmlFor="login-email" className={`ht-label${errors.email ? ' error' : ''}`}>
                 Email address
@@ -92,7 +91,7 @@ export default function LoginForm() {
               )}
             </div>
 
-            {/* Password */}
+
             <div>
               <label htmlFor="login-password" className={`ht-label${errors.password ? ' error' : ''}`}>
                 Password

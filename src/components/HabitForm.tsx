@@ -11,28 +11,28 @@ interface Props {
 }
 
 const FREQ_OPTIONS: { value: FrequencyType; label: string }[] = [
-  { value: 'daily',    label: 'Every day' },
+  { value: 'daily', label: 'Every day' },
   { value: 'weekdays', label: 'Weekdays' },
   { value: 'weekends', label: 'Weekends' },
-  { value: 'weekly',   label: 'Once a week' },
-  { value: 'custom',   label: 'Custom' },
+  { value: 'weekly', label: 'Once a week' },
+  { value: 'custom', label: 'Custom' },
 ];
 
 const DAY_LABELS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
 const FREQ_DESC: Record<FrequencyType, string> = {
-  daily:    'Repeats every day',
+  daily: 'Repeats every day',
   weekdays: 'Repeats Monday through Friday',
   weekends: 'Repeats Saturday and Sunday',
-  weekly:   'Repeats once per week on the selected day',
-  custom:   'Repeats on the selected days',
+  weekly: 'Repeats once per week on the selected day',
+  custom: 'Repeats on the selected days',
 };
 
 export default function HabitForm({ initial, onSave, onCancel }: Props) {
-  const [name, setName]           = useState(initial?.name ?? '');
-  const [desc, setDesc]           = useState(initial?.description ?? '');
-  const [freq, setFreq]           = useState<FrequencyType>(initial?.frequency ?? 'daily');
-  const [days, setDays]           = useState<number[]>(initial?.customDays ?? [1]);
+  const [name, setName] = useState(initial?.name ?? '');
+  const [desc, setDesc] = useState(initial?.description ?? '');
+  const [freq, setFreq] = useState<FrequencyType>(initial?.frequency ?? 'daily');
+  const [days, setDays] = useState<number[]>(initial?.customDays ?? [1]);
   const [nameError, setNameError] = useState('');
   const [daysError, setDaysError] = useState('');
   const nameRef = useRef<HTMLInputElement>(null);
@@ -48,10 +48,8 @@ export default function HabitForm({ initial, onSave, onCancel }: Props) {
 
   const toggleDay = (d: number) => {
     if (freq === 'weekly') {
-      // single-select
       setDays([d]);
     } else {
-      // multi-select
       setDays(prev => prev.includes(d) ? prev.filter(x => x !== d) : [...prev, d].sort());
     }
     setDaysError('');
@@ -94,7 +92,6 @@ export default function HabitForm({ initial, onSave, onCancel }: Props) {
           boxShadow: 'var(--shadow-md)',
         }}
       >
-        {/* Header */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '1.25rem 1.375rem 0' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.45rem' }}>
             <Sparkles size={16} strokeWidth={2} color="var(--brand)" />
@@ -109,7 +106,6 @@ export default function HabitForm({ initial, onSave, onCancel }: Props) {
         </div>
 
         <form onSubmit={handleSubmit} style={{ padding: '1.125rem 1.375rem 1.5rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-          {/* Name */}
           <div>
             <label htmlFor="habit-name" className={`ht-label${nameError ? ' error' : ''}`}>Habit name</label>
             <input
@@ -122,7 +118,7 @@ export default function HabitForm({ initial, onSave, onCancel }: Props) {
             {nameError && <p className="field-error"><span>⚠</span> {nameError}</p>}
           </div>
 
-          {/* Description */}
+     
           <div>
             <label htmlFor="habit-description" className="ht-label">
               Description <span style={{ color: 'var(--text-muted)', fontWeight: 400 }}>(optional)</span>
@@ -135,10 +131,9 @@ export default function HabitForm({ initial, onSave, onCancel }: Props) {
             />
           </div>
 
-          {/* Frequency */}
+
           <div>
             <label className="ht-label">Frequency</label>
-            {/* Hidden select for testid */}
             <select
               data-testid="habit-frequency-select"
               value={freq}
@@ -149,7 +144,7 @@ export default function HabitForm({ initial, onSave, onCancel }: Props) {
               {FREQ_OPTIONS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
             </select>
 
-            {/* Pill selector */}
+
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem' }}>
               {FREQ_OPTIONS.map(opt => {
                 const active = freq === opt.value;
@@ -171,7 +166,7 @@ export default function HabitForm({ initial, onSave, onCancel }: Props) {
               })}
             </div>
 
-            {/* Day picker — shows for weekly (single) and custom (multi) */}
+ 
             {showDayPicker && (
               <div style={{ marginTop: '0.75rem' }}>
                 <p style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginBottom: '0.5rem', fontWeight: 500 }}>
@@ -207,7 +202,7 @@ export default function HabitForm({ initial, onSave, onCancel }: Props) {
             </p>
           </div>
 
-          {/* Actions */}
+          
           <div style={{ display: 'flex', gap: '0.625rem', marginTop: '0.125rem' }}>
             <button type="button" onClick={onCancel} className="btn btn-ghost" style={{ flex: 1 }}>Cancel</button>
             <button data-testid="habit-save-button" type="submit" className="btn btn-primary" style={{ flex: 1 }}>

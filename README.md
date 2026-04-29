@@ -2,10 +2,10 @@
 A mobile-first Habit Tracker Progressive Web App built with Next.js + TypeScript + Tailwind CSS, implementing a full local-auth habit tracking system with streak tracking, frequency scheduling, and PWA offline support.
 
 ## Live Demo
-**https://your-deployment-url.vercel.app**
+**https://habit-tracker-three-steel.vercel.app/login**
 
 ## Repository
-**https://github.com/your-username/habit-tracker**
+**https://github.com/Demiomotee/Habit-tracker**
 
 ## Setup Instructions
 ```bash

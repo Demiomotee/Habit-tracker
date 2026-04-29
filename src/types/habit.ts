@@ -6,7 +6,7 @@ export type Habit = {
   name: string;
   description: string;
   frequency: FrequencyType;
-  customDays?: number[]; // 0=Sun,1=Mon,...,6=Sat for custom frequency
+  customDays?: number[];
   createdAt: string;
   completions: string[];
 };

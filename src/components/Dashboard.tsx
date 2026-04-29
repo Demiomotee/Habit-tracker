@@ -119,7 +119,7 @@ export default function Dashboard({ session }: Props) {
           {view === 'home' && (
             <>
               <div style={{ marginBottom: '1.25rem' }}>
-                <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)', fontWeight: 500 }}>{greeting} 👋</p>
+                <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)', fontWeight: 500 }}>{greeting}</p>
                 <h2 style={{ fontWeight: 800, fontSize: '1.5rem', color: 'var(--text-primary)', letterSpacing: '-0.03em', lineHeight: 1.15, marginTop: '0.1rem' }}>
                   {displayName}
                 </h2>
@@ -241,9 +241,6 @@ export default function Dashboard({ session }: Props) {
       {showSignOut && (
         <div style={{ position: 'fixed', inset: 0, zIndex: 200, background: 'rgba(0,0,0,0.4)', backdropFilter: 'blur(6px)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1.25rem' }}>
           <div className="modal-in" style={{ width: '100%', maxWidth: 320, background: 'var(--bg-card)', borderRadius: 20, border: '1px solid var(--border-soft)', padding: '1.75rem 1.5rem', textAlign: 'center' }}>
-            <div style={{ width: 44, height: 44, borderRadius: 12, margin: '0 auto 1rem', background: 'var(--brand-light)', border: '1px solid var(--border-soft)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.375rem' }}>
-              👋
-            </div>
             <h3 style={{ fontWeight: 700, fontSize: '0.9375rem', color: 'var(--text-primary)', letterSpacing: '-0.01em' }}>Sign out?</h3>
             <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem', marginTop: '0.375rem' }}>
               You&apos;ll need to sign in again to access your habits.

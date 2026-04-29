@@ -8,7 +8,6 @@ export default function SplashScreen() {
       display: 'flex', flexDirection: 'column',
       alignItems: 'center', justifyContent: 'center',
     }}>
-      {/* Pulse rings — subtle only */}
       {[280, 190].map((size, i) => (
         <div key={size} style={{
           position: 'absolute', width: size, height: size,
